@@ -33,3 +33,15 @@ Este material é baseado https://elixirschool.com/en, versão em Português http
 # Instalação
 
 Seguir o guia da página oficial https://elixir-lang.org/install.html ou https://elixirgirls.com/install-guides/windows.html
+
+# Shell - iex
+
+```elixir
+iex(1)> 2 + 3
+5
+iex(2)> 2 + 3 == 5
+true
+iex(3)> String.length("UFRA - ICIBE")         
+12
+```
+
