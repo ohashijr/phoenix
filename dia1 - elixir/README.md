@@ -18,6 +18,16 @@ https://www.fastcompany.com/3026758/inside-erlang-the-rare-programming-language-
 
 ![](elixir_code.jpg)
 
+- Phoenix "roubou" diversos desenvolvedores Rails. As similaridades de sintaxe do Elixir com o Ruby e as características de alta concorrência e escalabilidade providas pelo Erlang, tornaram o Elixir/Phoenix uma evolução natural para os desenvolvedores Ruby/Rails.
+
+fonte: https://smashingboxes.com/blog/choosing-your-future-tech-stack-clojure-vs-elixir-vs-go/
+
+- 2 milhões de WebSocket conexões com Phoenix
+
+![](2mi_websockets.png)
+
+fonte: https://phoenixframework.org/blog/the-road-to-2-million-websocket-connections
+
 Este material é baseado https://elixirschool.com/en, versão em Português https://elixirschool.com/pt (pode estar desatualizada)
 
 # Instalação
