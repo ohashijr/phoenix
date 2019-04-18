@@ -4,6 +4,10 @@
 
 fonte: https://en.wikipedia.org/wiki/Elixir_(programming_language)
 
+Evolução das linguagens de programação.
+
+fonte: https://www.welcometothejungle.co/fr/articles/languages-software-go-elixir
+
 - Erlang é apenas a linguagem (VM) por trás do Whatsapp, 50 engenheiros para 90 milhões de usuários. 
 
 fonte: 
