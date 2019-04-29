@@ -141,6 +141,7 @@ templates: template/postagem/index.eex
 
 No terminal executar:
 
+
 ```shell
 iex -S mix
 ```
