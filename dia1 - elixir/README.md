@@ -504,9 +504,6 @@ iex(137)> "Elixir rocks" |> String.upcase() |> String.split()
 ["ELIXIR", "ROCKS"]
 ```
 
-# Modules
-
-
 # Funções Enum
 
-
+https://elixirschool.com/en/lessons/basics/enum/
