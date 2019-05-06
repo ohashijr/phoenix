@@ -369,8 +369,6 @@ Se qualquer um dos testes do with falhar...
 ```elixir
 iex(94)> user = %{first: "Sean"}
 %{first: "Sean"}
-iex(95)> %{first: "Sean", last: "Callan"}
-%{first: "Sean", last: "Callan"}
 iex(96)> Map.fetch(user, :first) # função auxiliar para pegar um valor de um Map 
 {:ok, "Sean"}
 iex(97)> with {:ok, first} <- Map.fetch(user, :first),
@@ -504,9 +502,6 @@ iex(137)> "Elixir rocks" |> String.upcase() |> String.split()
 ["ELIXIR", "ROCKS"]
 ```
 
-# Modules
-
-
 # Funções Enum
 
-
+https://elixirschool.com/en/lessons/basics/enum/
