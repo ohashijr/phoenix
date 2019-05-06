@@ -141,22 +141,129 @@ templates: template/postagem/index.eex
 
 No terminal executar:
 
-
 ```shell
 iex -S mix
 ```
 
 ## Consultar todos os Posts
 
+```elixir
+iex(1)> alias Blog.Repo
+Blog.Repo
+iex(2)> alias alias Blog.Post.Postagem
+Blog.Post.Postagem
+iex(3)> Repo.all(Postagem)
+[debug] QUERY OK source="postagens" db=5.4ms decode=1.4ms queue=13.0ms
+SELECT p0.`id`, p0.`texto`, p0.`titulo`, p0.`inserted_at`, p0.`updated_at` FROM `postagens` AS p0 []
+[
+  %Blog.Post.Postagem{
+    __meta__: #Ecto.Schema.Metadata<:loaded, "postagens">,
+    id: 2,
+    inserted_at: ~N[2019-04-11 19:28:52],
+    texto: "Conteúdo....",
+    titulo: "Primeiro post",
+    updated_at: ~N[2019-04-11 19:28:52]
+  }
+]
+```
+
+## Criar um post 
+```elixir
+iex(4)> Repo.insert(%Postagem{titulo: "Novo Post", texto: "blalba  balba"})
+[debug] QUERY OK db=18.5ms queue=8.1ms
+INSERT INTO `postagens` (`texto`,`titulo`,`inserted_at`,`updated_at`) VALUES (?,?,?,?) ["blalba  balba", "Novo Post", ~N[2019-05-06 18:43:33], ~N[2019-05-06 18:43:33]]
+{:ok,
+ %Blog.Post.Postagem{
+   __meta__: #Ecto.Schema.Metadata<:loaded, "postagens">,
+   id: 3,
+   inserted_at: ~N[2019-05-06 18:43:33],
+   texto: "blalba  balba",
+   titulo: "Novo Post",
+   updated_at: ~N[2019-05-06 18:43:33]
+ }}
+```
+
 ## Consultar um post especifico, by id
+
+```elixir
+iex(6)> Repo.get(Postagem, 2)    
+[debug] QUERY OK source="postagens" db=20.5ms queue=21.7ms
+SELECT p0.`id`, p0.`texto`, p0.`titulo`, p0.`inserted_at`, p0.`updated_at` FROM `postagens` AS p0 WHERE (p0.`id` = ?) [2]
+%Blog.Post.Postagem{
+  __meta__: #Ecto.Schema.Metadata<:loaded, "postagens">,
+  id: 2,
+  inserted_at: ~N[2019-04-11 19:28:52],
+  texto: "Conteúdo....", 
+  titulo: "Primeiro post",
+  updated_at: ~N[2019-04-11 19:28:52]
+}
+```
 
 ## Consultar por título
 
+```elixir
+iex(8)> Repo.get_by(Postagem, titulo: "primeiro post")
+[debug] QUERY OK source="postagens" db=0.8ms
+SELECT p0.`id`, p0.`texto`, p0.`titulo`, p0.`inserted_at`, p0.`updated_at` FROM `postagens` AS p0 WHERE (p0.`titulo` = ?) ["primeiro post"]
+%Blog.Post.Postagem{
+  __meta__: #Ecto.Schema.Metadata<:loaded, "postagens">,
+  id: 2,
+  inserted_at: ~N[2019-04-11 19:28:52],
+  texto: "Conteúdo....", 
+  titulo: "Primeiro post",
+  updated_at: ~N[2019-04-11 19:28:52]
+}
+```
+
 ## Atualizar um post
 
-## Criar um post 
+```elixir
+iex(3)> Blog.Repo.get(Postagem, 2) 
+            |> Ecto.Changeset.change(%{titulo: "ohashi"})
+            |> Blog.Repo.update
+[debug] QUERY OK source="postagens" db=7.0ms
+SELECT p0.`id`, p0.`texto`, p0.`titulo`, p0.`inserted_at`, p0.`updated_at` FROM `postagens` AS p0 WHERE (p0.`id` = ?) [2]
+[debug] QUERY OK db=36.8ms queue=10.2ms
+UPDATE `postagens` SET `titulo` = ?, `updated_at` = ? WHERE `id` = ? ["ohashi", ~N[2019-05-06 19:04:35], 2]
+{:ok,
+ %Blog.Post.Postagem{
+   __meta__: #Ecto.Schema.Metadata<:loaded, "postagens">,
+   id: 2,
+   inserted_at: ~N[2019-04-11 19:28:52],
+   texto: "Conteúdo....",
+   titulo: "ohashi",
+   updated_at: ~N[2019-05-06 19:04:35]
+ }}
+
+```
 
 ## Deletar um post
+
+```elixir
+iex(5)> a = Repo.get(Postagem, 2)                                               [debug] QUERY OK source="postagens" db=3.4ms
+SELECT p0.`id`, p0.`texto`, p0.`titulo`, p0.`inserted_at`, p0.`updated_at` FROM `postagens` AS p0 WHERE (p0.`id` = ?) [2]
+%Blog.Post.Postagem{
+  __meta__: #Ecto.Schema.Metadata<:loaded, "postagens">,
+  id: 2,
+  inserted_at: ~N[2019-04-11 19:28:52],
+  texto: "Conteúdo....", 
+  titulo: "ohashi",
+  updated_at: ~N[2019-05-06 19:04:35]
+}
+
+iex(6)> Repo.delete(a)
+[debug] QUERY OK db=6.2ms queue=2.8ms
+DELETE FROM `postagens` WHERE `id` = ? [2]
+{:ok,
+ %Blog.Post.Postagem{
+   __meta__: #Ecto.Schema.Metadata<:deleted, "postagens">,
+   id: 2,
+   inserted_at: ~N[2019-04-11 19:28:52],
+   texto: "Conteúdo....",
+   titulo: "ohashi",
+   updated_at: ~N[2019-05-06 19:04:35]
+ }}
+```
 
 
 fonte: https://hexdocs.pm/phoenix/Mix.Tasks.Phx.Gen.Html.html
