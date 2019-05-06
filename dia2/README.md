@@ -150,7 +150,7 @@ iex -S mix
 ```elixir
 iex(1)> alias Blog.Repo
 Blog.Repo
-iex(2)> alias alias Blog.Post.Postagem
+iex(2)> alias Blog.Post.Postagem
 Blog.Post.Postagem
 iex(3)> Repo.all(Postagem)
 [debug] QUERY OK source="postagens" db=5.4ms decode=1.4ms queue=13.0ms
