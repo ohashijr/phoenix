@@ -225,3 +225,77 @@ SELECT p0.`id`, p0.`texto`, p0.`titulo`, p0.`user_id`, p0.`inserted_at`, p0.`upd
   updated_at: ~N[2019-05-17 18:49:24]
 }
 ```
+
+## Nested Resources
+
+```elixir
+defmodule BlogWeb.Router do
+  use BlogWeb, :router
+
+  pipeline :browser do
+    plug :accepts, ["html"]
+    plug :fetch_session
+    plug :fetch_flash
+    plug :protect_from_forgery
+    plug :put_secure_browser_headers
+  end
+
+  pipeline :api do
+    plug :accepts, ["json"]
+  end
+
+  scope "/", BlogWeb do
+    pipe_through :browser
+
+    resources "/users", UserController do
+      resources "/postagens", PostagemController
+    end
+
+    get "/", PageController, :index
+  end
+
+  # Other scopes may use custom stacks.
+  # scope "/api", BlogWeb do
+  #   pipe_through :api
+  # end
+end
+```
+
+## Rotas
+
+```shell
+mix phx.routes
+         user_path  GET     /users                                 BlogWeb.UserController :index
+         user_path  GET     /users/:id/edit                        BlogWeb.UserController :edit
+         user_path  GET     /users/new                             BlogWeb.UserController :new
+         user_path  GET     /users/:id                             BlogWeb.UserController :show
+         user_path  POST    /users                                 BlogWeb.UserController :create
+         user_path  PATCH   /users/:id                             BlogWeb.UserController :update
+                    PUT     /users/:id                             BlogWeb.UserController :update
+         user_path  DELETE  /users/:id                             BlogWeb.UserController :delete
+user_postagem_path  GET     /users/:user_id/postagens              BlogWeb.PostagemController :index
+user_postagem_path  GET     /users/:user_id/postagens/:id/edit     BlogWeb.PostagemController :edit
+user_postagem_path  GET     /users/:user_id/postagens/new          BlogWeb.PostagemController :new
+user_postagem_path  GET     /users/:user_id/postagens/:id          BlogWeb.PostagemController :show
+user_postagem_path  POST    /users/:user_id/postagens              BlogWeb.PostagemController :create
+user_postagem_path  PATCH   /users/:user_id/postagens/:id          BlogWeb.PostagemController :update
+                    PUT     /users/:user_id/postagens/:id          BlogWeb.PostagemController :update
+user_postagem_path  DELETE  /users/:user_id/postagens/:id          BlogWeb.PostagemController :delete
+         page_path  GET     /                                      BlogWeb.PageController :index
+         websocket  WS      /socket/websocket                      BlogWeb.UserSocket
+``` 
+
+## Alterando as rotas
+
+Rota quebrada
+http://localhost:4000/postagens
+
+Nova rota
+http://localhost:4000/users/1/postagens
+
+Rotas antigas precisam ser atualizadas
+
+
+
+
+
