@@ -295,7 +295,175 @@ http://localhost:4000/users/1/postagens
 
 Rotas antigas precisam ser atualizadas
 
+## Atualizando PostagemController
 
+```elixir
+defmodule BlogWeb.PostagemController do
+  use BlogWeb, :controller
 
+  alias Blog.Post
+  alias Blog.Post.Postagem
 
+  def index(conn, %{"user_id" => user_id}) do
+    IO.puts("PostagemController:index")
+    postagens = Post.list_postagens(user_id)
+    IO.inspect(postagens)
+    render(conn, "index.html", postagens: postagens, user_id: user_id)
+  end
 
+  def new(conn, %{"user_id" => user_id}) do
+    changeset = Post.change_postagem(%Postagem{})
+    render(conn, "new.html", changeset: changeset, user_id: user_id)
+  end
+
+  def create(conn, %{"postagem" => postagem_params, "user_id" => user_id}) do
+    case Post.create_postagem(postagem_params) do
+      {:ok, postagem} ->
+        conn
+        |> put_flash(:info, "Postagem created successfully.")
+        |> redirect(to: Routes.user_postagem_path(conn, :show, user_id, postagem))
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        render(conn, "new.html", changeset: changeset, user_id: user_id)
+    end
+  end
+
+  def show(conn, %{"id" => id, "user_id" => user_id}) do
+    postagem = Post.get_postagem!(id)
+    render(conn, "show.html", postagem: postagem, user_id: user_id)
+  end
+
+  def edit(conn, %{"id" => id, "user_id" => user_id}) do
+    postagem = Post.get_postagem!(id)
+    changeset = Post.change_postagem(postagem)
+    render(conn, "edit.html", postagem: postagem, changeset: changeset, user_id: user_id)
+  end
+
+  def update(conn, %{"id" => id, "postagem" => postagem_params, "user_id" => user_id}) do
+    postagem = Post.get_postagem!(id)
+
+    case Post.update_postagem(postagem, postagem_params) do
+      {:ok, postagem} ->
+        conn
+        |> put_flash(:info, "Postagem updated successfully.")
+        |> redirect(to: Routes.user_postagem_path(conn, :show, user_id, postagem))
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        render(conn, "edit.html", postagem: postagem, changeset: changeset, user_id: user_id)
+    end
+  end
+
+  def delete(conn, %{"id" => id, "user_id" => user_id}) do
+    postagem = Post.get_postagem!(id)
+    {:ok, _postagem} = Post.delete_postagem(postagem)
+
+    conn
+    |> put_flash(:info, "Postagem deleted successfully.")
+    |> redirect(to: Routes.user_postagem_path(conn, :index, user_id))
+  end
+end
+```
+
+## Atualizando os templates
+
+template/postagem/edit
+```html
+<h1>Edit Postagem</h1>
+
+<%= render "form.html", Map.put(assigns, :action, Routes.user_postagem_path(@conn, :update, @user_id, @postagem)) %>
+
+<span><%= link "Back", to: Routes.user_postagem_path(@conn, :index, @user_id) %></span>
+```
+
+template/postagem/form
+```html
+<%= form_for @changeset, @action, fn f -> %>
+  <%= if @changeset.action do %>
+    <div class="alert alert-danger">
+      <p>Oops, something went wrong! Please check the errors below.</p>
+    </div>
+  <% end %>
+
+  <%= label f, :titulo %>
+  <%= text_input f, :titulo %>
+  <%= error_tag f, :titulo %>
+
+  <%= label f, :texto %>
+  <%= textarea f, :texto %>
+  <%= error_tag f, :texto %>
+
+  <%= label f, :user_id %>
+  <%= text_input f, :user_id %>
+  <%= error_tag f, :user_id %>
+
+  <div>
+    <%= submit "Save" %>
+  </div>
+<% end %>
+```
+
+template/postagens/index
+```html
+<h1>Listing Postagens</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Titulo</th>
+      <th>Texto</th>
+      <th>User_id</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for postagem <- @postagens do %>
+    <tr>
+      <td><%= postagem.titulo %></td>
+      <td><%= postagem.texto %></td>
+      <td><%= postagem.user_id %></td>
+      <td><%= link "edit", to: Routes.user_postagem_path(@conn, :edit, @user_id, postagem) %></td>
+      <td><%= link "delete", to: Routes.user_postagem_path(@conn, :delete, @user_id, postagem.id), method: :delete, data: [confirm: "Você tem certeza?"] %></td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Postagem", to: Routes.user_postagem_path(@conn, :new, @user_id) %></span>
+```
+
+templates/postagens/new
+```html
+<h1>New Postagem</h1>
+
+<%= render "form.html", Map.put(assigns, :action, Routes.user_postagem_path(@conn, :create, @user_id)) %>
+
+<span><%= link "Back", to: Routes.user_postagem_path(@conn, :index, @user_id) %></span>
+```
+
+templates/postagens/show
+```html
+<h1>Show Postagem</h1>
+
+<ul>
+
+  <li>
+    <strong>Titulo:</strong>
+    <%= @postagem.titulo %>
+  </li>
+
+  <li>
+    <strong>Texto:</strong>
+    <%= @postagem.texto %>
+  </li>
+
+  <li>
+    <strong>User_id:</strong>
+    <%= @postagem.user_id %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.user_postagem_path(@conn, :edit, @user_id, @postagem) %></span>
+<span><%= link "Back", to: Routes.user_postagem_path(@conn, :index, @user_id) %></span>
+```
